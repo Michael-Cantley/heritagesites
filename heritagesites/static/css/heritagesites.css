@@ -1,0 +1,163 @@
+/*
+ * Page layout
+ */
+
+body {
+    background-color: #EDEAE5;
+}
+
+/*
+ * Navigation
+ */
+
+nav {
+    background-color: transparent;
+}
+
+/*
+ * Bootstrap navbar
+ */
+
+.navbar-custom {
+    background-color: #026670;
+}
+
+/* change the brand and text color */
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-text {
+    color: rgba(255,255,255,.8);
+    /* padding: 0.8rem 1rem; */
+}
+/* change the link color */
+.navbar-custom .navbar-nav .nav-link {
+    color: rgba(255,255,255,.5);
+    /* padding: 1rem 1rem; */
+}
+/* change the color of active or hovered links */
+.navbar-custom .nav-item.active .nav-link,
+.navbar-custom .nav-item:focus .nav-link,
+.navbar-custom .nav-item:hover .nav-link {
+    color: #026670;
+    background-color: #9FEDD7; /* add background-color to active links */
+}
+
+/*
+ * Bootstrap Pagination
+ */
+
+.pagination > li.page-item {
+    background-color: transparent;
+    border: 1px solid #026670;
+    color: #FCE181;
+    font-size: 0.75rem;
+    /* line-height: 1rem; */
+    text-decoration: none;
+}
+
+.pagination > li.page-item.active {
+    background-color: #FCE181;
+    color: #026670;
+    /* padding: 0.25rem 0.75rem; */
+}
+
+/*
+ * HTML 5 main
+ */
+
+main {
+    background-color: transparent;
+}
+
+.container-fluid {
+    background-color: transparent;
+    /* padding: 0.5rem 0.5rem; */
+}
+
+/*
+ * Footer
+ */
+
+footer {
+    background-color: #026670;
+    /* padding: 0.8rem 1rem; */
+}
+
+footer a:link {
+    background-color: transparent;
+    color: #9FEDD7;
+    text-decoration: none;
+}
+
+footer a:active {
+    background-color: transparent;
+    color: #FEF9C7;
+}
+
+footer a:hover {
+    background-color: transparent;
+    color: #FEF9C7;
+    /* color: #D8C3A5; */
+}
+
+footer a:visited {
+    color: #FCE181;
+    text-decoration: none;
+}
+
+footer p {
+    background-color: #026670;
+    display: block;
+    text-align: left;
+    font-size: 0.875rem;
+    font-stretch: condensed;
+    color: #EDEAE5;
+}
+
+/*
+ * Headings
+ */
+
+h1, h2, h3, h4 {
+    color: #026670;
+    /* margin-top: 1em; */
+    /* margin-bottom: 0.5rem; */
+    text-align: left;
+}
+
+/*
+ * Paragraphs
+ */
+
+p {
+    /* color: #8E8D8A; */
+    color: #026670;
+    text-align: justify;
+}
+
+/*
+ * Links
+ * https://www.w3schools.com/css/css_link.asp
+ */
+
+a:link {
+    background-color: transparent;
+    color: #026670;
+    text-decoration: none;
+}
+
+a:hover {
+    background-color: transparent;
+    color: #9FEDD7;
+    /* color: #D8C3A5; */
+}
+
+a:active {
+    background-color: transparent;
+    color: #FCE181;
+}
+
+a:visited {
+    background-color: transparent;
+    color: #026670;
+    text-decoration: none;
+}
