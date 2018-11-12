@@ -12,11 +12,10 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 from mysite import secrets
-#MAKE A SECRETS FILE!!!!!!!!!!!
 #from mysite import secrets
-#SECRET_KEY = secrets.SECRET_KEY
-#SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-#SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+SECRET_KEY = secrets.SECRET_KEY
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,9 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Django secret key
-#SECRETS will go here ------------------------------------
-#-----------------------------------------------------
-#--------------------------------------------------------
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

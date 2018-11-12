@@ -164,7 +164,7 @@ class SiteUpdateView(generic.UpdateView):
 class SiteDeleteView(generic.DeleteView):
 	model = HeritageSite
 	success_message = "Heritage Site deleted successfully"
-	success_url = reverse_lazy('site')
+	success_url = reverse_lazy('sites')
 	context_object_name = 'site'
 	template_name = 'heritagesites/site_delete.html'
 
