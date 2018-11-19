@@ -161,25 +161,108 @@ class HeritageSite(models.Model):
         return reverse('site_detail', kwargs={'pk': self.pk})
 
 
-'''
-class HeritageSite(models.Model):
-    heritage_site_id = models.AutoField(primary_key=True)
-    site_name = models.CharField(unique=True, max_length=255)
-    description = models.TextField()
-    justification = models.TextField(blank=True, null=True)
-    date_inscribed = models.TextField(blank=True, null=True)  # This field type is a guess.
-    longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
-    latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
-    area_hectares = models.FloatField(blank=True, null=True)
-    heritage_site_category = models.ForeignKey('HeritageSiteCategory', models.DO_NOTHING)
-    transboundary = models.IntegerField()
+# Assignment #9
+    @property
+    def country_area_names(self):
+        """
+        Returns a list of UNSD countries/areas (names only) associated with a Heritage Site.
+        Note that not all Heritage Sites are associated with a country/area (e.g., Old City
+        Walls of Jerusalem). In such cases the Queryset will return as <QuerySet [None]> and the
+        list will need to be checked for None or a TypeError (sequence item 0: expected str
+        instance, NoneType found) runtime error will be thrown.
+        :return: string
+        """
+        countries = self.country_area.select_related('location').order_by('country_area_name')
 
-    class Meta:
-        managed = False
-        db_table = 'heritage_site'
-'''
+        names = []
+        for country in countries:
+            name = country.country_area_name
+            if name is None:
+                continue
+            iso_code = country.iso_alpha3_code
+
+            name_and_code = ''.join([name, ' (', iso_code, ')'])
+            if name_and_code not in names:
+                names.append(name_and_code)
+
+        return ', '.join(names)
+
+    @property
+    def region_names(self):
+        """
+        Returns a list of UNSD regions (names only) associated with a Heritage Site.
+        Note that not all Heritage Sites are associated with a region. In such cases the
+        Queryset will return as <QuerySet [None]> and the list will need to be checked for
+        None or a TypeError (sequence item 0: expected str instance, NoneType found) runtime
+        error will be thrown.
+        :return: string
+        """
+
+        # Add code that uses self to retrieve a QuerySet composed of regions, then loops over it
+        # building a list of region names, before returning a comma-delimited string of names.
+        countries = self.country_area.select_related('location').order_by('location__region__region_name')
+
+        names_r = []
+        for country in countries:
+            region = country.location.region
+            if region is None:
+                continue
+            name = region.region_name
+            if name not in names_r:
+                names_r.append(name)
+
+        return ', '.join(names_r)
+
+    @property
+    def sub_region_names(self):
+        """
+        Returns a list of UNSD subregions (names only) associated with a Heritage Site.
+        Note that not all Heritage Sites are associated with a subregion. In such cases the
+        Queryset will return as <QuerySet [None]> and the list will need to be checked for
+        None or a TypeError (sequence item 0: expected str instance, NoneType found) runtime
+        error will be thrown.
+        :return: string
+        """
+
+        countries = self.country_area.select_related('location').order_by('location__sub_region__sub_region_name')
+
+        names_s = []
+        for country in countries:
+            subregion = country.location.sub_region
+            if subregion is None:
+                continue
+            name = subregion.sub_region_name
+            if name not in names_s:
+                names_s.append(name)
+
+        return ', '.join(names_s)
+
+    @property
+    def intermediate_region_names(self):
+        """
+        Returns a list of UNSD intermediate regions (names only) associated with a Heritage Site.
+        Note that not all Heritage Sites are associated with an intermediate region. In such
+        cases the Queryset will return as <QuerySet [None]> and the list will need to be
+        checked for None or a TypeError (sequence item 0: expected str instance, NoneType found)
+        runtime error will be thrown.
+        :return: string
+        """
+
+        countries = self.country_area.select_related('location').order_by('location__intermediate_region__intermediate_region_name')
+
+        names_i = []
+        for country in countries:
+            intregion = country.location.intermediate_region
+            if intregion is None:
+                continue
+            name = intregion.intermediate_region_name
+            if name not in names_i:
+                names_i.append(name)
+
+        return ', '.join(names_i)
 
 
+# STOP
 class HeritageSiteCategory(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(unique=True, max_length=25)
@@ -274,7 +357,6 @@ class Region(models.Model):
     def __str__(self):
         return self.region_name
 
-
 '''
 class Region(models.Model):
     region_id = models.AutoField(primary_key=True)
@@ -300,6 +382,26 @@ class SubRegion(models.Model):
 
     def __str__(self):
         return self.sub_region_name
+
+
+'''
+class HeritageSite(models.Model):
+    heritage_site_id = models.AutoField(primary_key=True)
+    site_name = models.CharField(unique=True, max_length=255)
+    description = models.TextField()
+    justification = models.TextField(blank=True, null=True)
+    date_inscribed = models.TextField(blank=True, null=True)  # This field type is a guess.
+    longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
+    latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
+    area_hectares = models.FloatField(blank=True, null=True)
+    heritage_site_category = models.ForeignKey('HeritageSiteCategory', models.DO_NOTHING)
+    transboundary = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'heritage_site'
+'''
+
 
 
 '''
@@ -416,4 +518,63 @@ class SubRegion(models.Model):
 #         managed = False
 #         db_table = 'sub_region'
 #date_inscribed = models.TextField(blank=True, null=True)  # This field type is a guess.
+
+        # Add code that uses self to retrieve a QuerySet, then loops over it building a list of
+        # intermediate region names, before returning a comma-delimited string of names using the
+        # string join method.
+        # int_regions = self.intermediate_region.select_related('location').order_by('intermediate_region_name')
+        # int_regions = []
+        # countries = self.country_area.select_related('location').order_by('country_area_name')
+        # for ca in countries:
+        #     int_region_c = ca.location.intermediate_region
+        #     int_regions.append(int_region_c)
+        #
+        # names_i = []
+        # for int_region in int_regions:
+        #     try:
+        #         i_name = int_region.intermediate_region_name
+        #         if i_name is None:
+        #             continue
+        #         if i_name not in names_i:
+        #             names_i.append(i_name)
+        #     except:
+        #         pass
+                # Add code that uses self to retrieve a QuerySet, then loops over it building a list of
+                # sub region names, before returning a comma-delimited string of names using the string
+                # join method.
+                # Add code that uses self to retrieve a QuerySet composed of regions, then loops over it
+                #sub_regions = self.sub_region.select_related('location').order_by('sub_region_name')
+                #
+                # sub_regions = []
+                # countries = self.country_area.select_related('location').order_by('country_area_name')
+                # for ca in countries:
+                #     sub_region_b = ca.location.sub_region
+                #     sub_regions.append(sub_region_b)
+                #
+                # # building a list of region names, before returning a comma-delimited string of names.
+                # names_s = []
+                # for sub_region in sub_regions:
+                #     name_sub_region = sub_region.sub_region_name
+                #     if name_sub_region is None:
+                #         continue
+                #
+                #     if name_sub_region not in names_s:
+                #         names_s.append(name_sub_region)
+                # names_r = []
+                # for region in regions:
+                #     name_region = region.region_name
+                #     if name_region is None:
+                #         continue
+                #
+                #     if name_region not in names_r:
+                #         names_r.append(name_region)
+                # regions = self.CountryArea.Location.Region.select_related('location', 'region').order_by('region_name')
+                #regions = self.CountryArea.Location.Region.select_related('location', 'region').order_by('region_name')
+                # regions = []
+                # countries = self.country_area.select_related('location').order_by('country_area_name')
+                # for ca in countries:
+                #     region_a = ca.location.region
+                #     regions.append(region_a)
+                #regions = region.filter(location__country_area__heritagesite = self).order_by('region_name')
+                #self.country_area__location__region__region_name.select_related('location', 'region')
 '''

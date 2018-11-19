@@ -16,6 +16,9 @@ from django.urls import reverse_lazy
 from .models import HeritageSiteJurisdiction
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
+# Assignment 9
+from .filters import HeritageSiteFilter
+from django_filters.views import FilterView
 
 
 def index(request):
@@ -182,3 +185,8 @@ class SiteDeleteView(generic.DeleteView):
 		self.object.delete()
 
 		return HttpResponseRedirect(self.get_success_url())
+
+
+class SiteFilterView(FilterView):
+	filterset_class = HeritageSiteFilter
+	template_name = 'heritagesites/site_filter.html'

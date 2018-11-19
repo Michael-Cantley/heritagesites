@@ -12,6 +12,8 @@ urlpatterns = [
     path('sites/new/', views.SiteCreateView.as_view(), name='site_new'),
     path('sites/<int:pk>/delete/', views.SiteDeleteView.as_view(), name='site_delete'),
     path('sites/<int:pk>/update/', views.SiteUpdateView.as_view(), name='site_update'),
+    # From assignment #9
+    path('sites/search', views.SiteFilterView.as_view(), name="search")
 ]
 
 # from django.urls import path, re_path
