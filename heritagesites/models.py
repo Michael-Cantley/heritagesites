@@ -18,8 +18,11 @@ class CountryArea(models.Model):
     # intermediate_region = models.ForeignKey('IntermediateRegion', models.DO_NOTHING, blank=True, null=True)
     m49_code = models.SmallIntegerField()
     iso_alpha3_code = models.CharField(max_length=3)
-    location = models.ForeignKey('Location', models.DO_NOTHING, blank=True, default=1)
-    dev_status = models.ForeignKey('DevStatus', models.DO_NOTHING, blank=True, null=True)
+    location = models.ForeignKey('Location', on_delete=models.PROTECT, blank=True, default=1)
+    dev_status = models.ForeignKey('DevStatus', on_delete=models.PROTECT, blank=True, null=True)
+    # Removed VV for Assignment 10.
+    # location = models.ForeignKey('Location', models.DO_NOTHING, blank=True, default=1)
+    # dev_status = models.ForeignKey('DevStatus', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -30,23 +33,6 @@ class CountryArea(models.Model):
 
     def __str__(self):
         return self.country_area_name
-
-
-'''
-class CountryArea(models.Model):
-    country_area_id = models.AutoField(primary_key=True)
-    country_area_name = models.CharField(unique=True, max_length=100)
-    region = models.ForeignKey('Region', models.DO_NOTHING, blank=True, null=True)
-    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING, blank=True, null=True)
-    intermediate_region = models.ForeignKey('IntermediateRegion', models.DO_NOTHING, blank=True, null=True)
-    m49_code = models.SmallIntegerField()
-    iso_alpha3_code = models.CharField(max_length=3)
-    dev_status = models.ForeignKey('DevStatus', models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'country_area'
-'''
 
 
 class DevStatus(models.Model):
@@ -63,16 +49,6 @@ class DevStatus(models.Model):
     def __str__(self):
         return self.dev_status_name
 
-
-'''
-class DevStatus(models.Model):
-    dev_status_id = models.AutoField(primary_key=True)
-    dev_status_name = models.CharField(unique=True, max_length=25)
-
-    class Meta:
-        managed = False
-        db_table = 'dev_status'
-'''
 
 class Planet(models.Model):
     """
@@ -97,11 +73,17 @@ class Location(models.Model):
     """
     New model based on Mtg 5 refactoring of the database.
     """
+    # EDIT For Assigment #10
+    # location_id = models.AutoField(primary_key=True)
+    # planet =  models.ForeignKey('Planet', models.DO_NOTHING, blank=True, null=True)
+    # region = models.ForeignKey('Region', models.DO_NOTHING, blank=True, null=True)
+    # sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING, blank=True, null=True)
+    # intermediate_region = models.ForeignKey('IntermediateRegion', models.DO_NOTHING, blank=True, null=True)
     location_id = models.AutoField(primary_key=True)
-    planet =  models.ForeignKey('Planet', models.DO_NOTHING, blank=True, null=True)
-    region = models.ForeignKey('Region', models.DO_NOTHING, blank=True, null=True)
-    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING, blank=True, null=True)
-    intermediate_region = models.ForeignKey('IntermediateRegion', models.DO_NOTHING, blank=True, null=True)
+    planet =  models.ForeignKey('Planet', on_delete=models.PROTECT, blank=True, null=True)
+    region = models.ForeignKey('Region', on_delete=models.PROTECT, blank=True, null=True)
+    sub_region = models.ForeignKey('SubRegion', on_delete=models.PROTECT, blank=True, null=True)
+    intermediate_region = models.ForeignKey('IntermediateRegion', on_delete=models.PROTECT, blank=True, null=True)
     # define additional properties as needed
 
     class Meta:
@@ -133,7 +115,8 @@ class HeritageSite(models.Model):
     longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
     area_hectares = models.FloatField(blank=True, null=True)
-    heritage_site_category = models.ForeignKey('HeritageSiteCategory', models.DO_NOTHING)
+    # heritage_site_category = models.ForeignKey('HeritageSiteCategory', models.DO_NOTHING)
+    heritage_site_category = models.ForeignKey('HeritageSiteCategory', on_delete=models.PROTECT)
     transboundary = models.IntegerField()
     # Intermediate model (country_area -> heritage_site_jurisdiction <- heritage_site)
     country_area = models.ManyToManyField(CountryArea, through='HeritageSiteJurisdiction')
@@ -261,8 +244,7 @@ class HeritageSite(models.Model):
 
         return ', '.join(names_i)
 
-
-# STOP
+# STOP for assignment 9
 class HeritageSiteCategory(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(unique=True, max_length=25)
@@ -278,21 +260,15 @@ class HeritageSiteCategory(models.Model):
         return self.category_name
 
 
-'''
-class HeritageSiteCategory(models.Model):
-    category_id = models.AutoField(primary_key=True)
-    category_name = models.CharField(unique=True, max_length=25)
-
-    class Meta:
-        managed = False
-        db_table = 'heritage_site_category'
-'''
-
-
 class HeritageSiteJurisdiction(models.Model):
+    """
+    PK added to satisfy Django requirement.  Both heritage_site and country_area
+    entries will be deleted if corresponding parent record in the heritage_site or country_area
+    table is deleted.  This mirrors CONSTRAINT behavior in the MySQL back-end.
+    """
     heritage_site_jurisdiction_id = models.AutoField(primary_key=True)
-    heritage_site = models.ForeignKey(HeritageSite, models.DO_NOTHING)
-    country_area = models.ForeignKey(CountryArea, models.DO_NOTHING)
+    heritage_site = models.ForeignKey(HeritageSite, on_delete=models.CASCADE)
+    country_area = models.ForeignKey(CountryArea, on_delete=models.CASCADE)
 
     class Meta:
         managed = False
@@ -301,22 +277,24 @@ class HeritageSiteJurisdiction(models.Model):
         verbose_name = 'UNESCO Heritage Site Jurisdiction'
         verbose_name_plural = 'UNESCO Heritage Site Jurisdictions'
 
-
-'''
-class HeritageSiteJurisdiction(models.Model):
-    heritage_site_jurisdiction_id = models.AutoField(primary_key=True)
-    heritage_site = models.ForeignKey(HeritageSite, models.DO_NOTHING)
-    country_area = models.ForeignKey(CountryArea, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'heritage_site_jurisdiction'
-'''
+# class HeritageSiteJurisdiction(models.Model):
+#     heritage_site_jurisdiction_id = models.AutoField(primary_key=True)
+#     heritage_site = models.ForeignKey(HeritageSite, models.DO_NOTHING)
+#     country_area = models.ForeignKey(CountryArea, models.DO_NOTHING)
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'heritage_site_jurisdiction'
+#         ordering = ['heritage_site', 'country_area']
+#         verbose_name = 'UNESCO Heritage Site Jurisdiction'
+#         verbose_name_plural = 'UNESCO Heritage Site Jurisdictions'
 
 class IntermediateRegion(models.Model):
     intermediate_region_id = models.AutoField(primary_key=True)
     intermediate_region_name = models.CharField(unique=True, max_length=100)
-    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING)
+    # Assigbnment #10
+    # sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING)
+    sub_region = models.ForeignKey('SubRegion', on_delete=models.PROTECT)
 
     class Meta:
         managed = False
@@ -329,22 +307,11 @@ class IntermediateRegion(models.Model):
         return self.intermediate_region_name
 
 
-'''
-class IntermediateRegion(models.Model):
-    intermediate_region_id = models.AutoField(primary_key=True)
-    intermediate_region_name = models.CharField(unique=True, max_length=100)
-    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'intermediate_region'
-'''
-
-
 class Region(models.Model):
     region_id = models.AutoField(primary_key=True)
     region_name = models.CharField(unique=True, max_length=100)
-    planet = models.ForeignKey('Planet', models.DO_NOTHING, default=1)
+    # planet = models.ForeignKey('Planet', models.DO_NOTHING, default=1)
+    planet = models.ForeignKey('Planet', on_delete=models.PROTECT, default=1)
 
 
     class Meta:
@@ -357,21 +324,12 @@ class Region(models.Model):
     def __str__(self):
         return self.region_name
 
-'''
-class Region(models.Model):
-    region_id = models.AutoField(primary_key=True)
-    region_name = models.CharField(unique=True, max_length=100)
-
-    class Meta:
-        managed = False
-        db_table = 'region'
-'''
-
 
 class SubRegion(models.Model):
     sub_region_id = models.AutoField(primary_key=True)
     sub_region_name = models.CharField(unique=True, max_length=100)
-    region = models.ForeignKey(Region, models.DO_NOTHING)
+    # region = models.ForeignKey(Region, models.DO_NOTHING)
+    region = models.ForeignKey(Region, on_delete=PROTECT)
 
     class Meta:
         managed = False
@@ -577,4 +535,77 @@ class SubRegion(models.Model):
                 #     regions.append(region_a)
                 #regions = region.filter(location__country_area__heritagesite = self).order_by('region_name')
                 #self.country_area__location__region__region_name.select_related('location', 'region')
+'''
+
+#Moved for assignment #10
+
+'''
+class CountryArea(models.Model):
+    country_area_id = models.AutoField(primary_key=True)
+    country_area_name = models.CharField(unique=True, max_length=100)
+    region = models.ForeignKey('Region', models.DO_NOTHING, blank=True, null=True)
+    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING, blank=True, null=True)
+    intermediate_region = models.ForeignKey('IntermediateRegion', models.DO_NOTHING, blank=True, null=True)
+    m49_code = models.SmallIntegerField()
+    iso_alpha3_code = models.CharField(max_length=3)
+    dev_status = models.ForeignKey('DevStatus', models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'country_area'
+'''
+
+
+'''
+class DevStatus(models.Model):
+    dev_status_id = models.AutoField(primary_key=True)
+    dev_status_name = models.CharField(unique=True, max_length=25)
+
+    class Meta:
+        managed = False
+        db_table = 'dev_status'
+'''
+
+'''
+class HeritageSiteCategory(models.Model):
+    category_id = models.AutoField(primary_key=True)
+    category_name = models.CharField(unique=True, max_length=25)
+
+    class Meta:
+        managed = False
+        db_table = 'heritage_site_category'
+'''
+
+
+'''
+class HeritageSiteJurisdiction(models.Model):
+    heritage_site_jurisdiction_id = models.AutoField(primary_key=True)
+    heritage_site = models.ForeignKey(HeritageSite, models.DO_NOTHING)
+    country_area = models.ForeignKey(CountryArea, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'heritage_site_jurisdiction'
+'''
+
+
+'''
+class IntermediateRegion(models.Model):
+    intermediate_region_id = models.AutoField(primary_key=True)
+    intermediate_region_name = models.CharField(unique=True, max_length=100)
+    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'intermediate_region'
+'''
+
+'''
+class Region(models.Model):
+    region_id = models.AutoField(primary_key=True)
+    region_name = models.CharField(unique=True, max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'region'
 '''
