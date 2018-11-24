@@ -329,7 +329,7 @@ class SubRegion(models.Model):
     sub_region_id = models.AutoField(primary_key=True)
     sub_region_name = models.CharField(unique=True, max_length=100)
     # region = models.ForeignKey(Region, models.DO_NOTHING)
-    region = models.ForeignKey(Region, on_delete=PROTECT)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT)
 
     class Meta:
         managed = False
