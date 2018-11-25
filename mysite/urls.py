@@ -30,9 +30,10 @@ urlpatterns = [
          name='logout'),
     path('heritagesites/', include('heritagesites.urls')),
     # Assignment 10
-    path('heritagesites/api/rest-auth', include('rest_auth.urls')),
-    # Double check *****NOTE:
+    path('heritagesites/api/rest-auth/', include('rest_auth.urls')),
     path('heritagesites/api/rest-auth/registration/', include('rest_auth.registration.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+    path('heritagesites/api/', include('api.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # pre-assignment 7

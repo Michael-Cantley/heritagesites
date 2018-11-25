@@ -44,7 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.sites', #Assignment 10
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Local
+    'api.apps.ApiConfig',
     'heritagesites.apps.HeritagesitesConfig',
+
+    # Third-party
     'corsheaders',
     'crispy_forms',                                       # <-- Added assignment.8
     'django_filters',            #<<<-- Added assignment.9
